@@ -30,6 +30,22 @@ get_header( 'shop' );
 
 <?php
 
+
+prodview_scripts();
+
+function prodview_scripts() {
+    wp_enqueue_script( 'prodview', get_stylesheet_directory_uri() . '/assets/js/prodview.js', array( 'jquery' ), false, true );
+    wp_localize_script( 
+        'prodview', 
+        'WPR', 
+        array( 
+            'ajax_url'   => admin_url( 'admin-ajax.php' ),
+            'ajax_nonce' => wp_create_nonce( 'prodview' )
+        )
+    );
+}
+
+
 /**
  * Hook: woocommerce_before_main_content.
  *
@@ -115,37 +131,11 @@ do_action( 'woocommerce_sidebar' );
 
 get_footer( 'shop' );
 
-
-function quickview() {
+/*
     quickview_scripts();
     //ob_start();
 
     //return ob_get_clean();
 }
+*/
 
-function quickview_callback() {
-
-    header( "Content-Type: application/json" );
-    if ( isset( $_GET ) ) {
-        $prod_id = $_GET[ 'prod_id' ];
-        echo wp_json_encode( $prod_id );
-    }
-    
-    wp_die();
-}
-
-add_action( 'wp_ajax_quickview', 'quickview_callback' );
-add_action( 'wp_ajax_nopriv_quickview', 'quickview_callback' );
-
-function quickview_scripts() {
-    
-    wp_enqueue_script( 'quickview', get_stylesheet_directory_uri() . '/quickview.js', array( 'jquery' ), '1.0', true );
-    wp_localize_script( 
-        'quickview', 
-        'WPRQV', 
-        array( 
-            'ajax_url'   => admin_url( 'admin-ajax.php' ),
-            'ajax_nonce' => wp_create_nonce( 'quickview' ) 
-        )
-    );
-}
